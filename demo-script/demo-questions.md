@@ -23,7 +23,7 @@
 🇨🇿 *"Kolik letů je celkem v databázi?"*
 🇬🇧 *"How many flights are in the database?"*
 
-**Expected**: ~50,000 flights total
+**Expected**: ~100,000 flights total
 
 ---
 

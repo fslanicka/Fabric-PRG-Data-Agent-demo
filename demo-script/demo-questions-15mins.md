@@ -5,7 +5,7 @@
 - 🇨🇿 *"Kolik letů je celkem v databázi?"*
 - 🇬🇧 *"How many flights are in the database?"*
 
-**Expected**: ~50,000 flights total
+**Expected**: ~100,000 flights total
 
 ---
 
@@ -76,16 +76,3 @@
 
 **Expected**: Monthly table showing seasonal patterns in both traffic and passenger volumes
 
----
-
-## 🎬 Recommended Demo Flow
-
-For a **15-minute demo**, use this sequence:
-
-1. **Start simple** (Q1) — show the agent understands the data
-2. **Airline ranking** (Q5) — demonstrate JOIN capability
-3. **Weather impact** (Q11) — showcase cross-table analysis
-4. **Monthly trends** (Q14) — time-series intelligence
-5. **Popular destinations** (Q18) — geographic dimension
-6. **Czech language** (Q24 in Czech) — show bilingual capability
-7. **Complex insight** (Q27) — grand finale with multi-table business question
