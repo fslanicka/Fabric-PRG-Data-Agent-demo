@@ -22,38 +22,94 @@
    - ✅ `weather`
 6. Click **Confirm**
 
-## 2.3 Add Data Source Description
+## 2.2b Add Eventhouse Data Source
 
-1. Click on the Lakehouse data source you just added
+1. In the Agent configuration page, find **Data Sources**
+2. Click **+ Add data source**
+3. Select **KQL Database**
+4. Choose your `PRGOperations` KQL database (from the Eventhouse)
+5. Select the following tables:
+   - ✅ `gate_assignments`
+   - ✅ `crew_rosters`
+   - ✅ `maintenance_events`
+6. Click **Confirm**
+
+## 2.2c Add Ontology Data Source
+
+1. In the Agent configuration page, find **Data Sources**
+2. Click **+ Add data source**
+3. Search for **PRGAirportOntology** (the ontology created in Step 2b)
+4. Select it and click **Add**
+5. The ontology and its entity types are now visible in the Explorer
+
+> **Note**: The ontology must be created and configured first (see `setup-guide/02b-configure-ontology.md`).
+
+## 2.3 Add Data Source Descriptions
+
+### Lakehouse Description
+1. Click on the **Lakehouse** data source
 2. Find the **Description** field
 3. Copy and paste the content from `agent-config/datasource-description.md`
    - Copy only the text between the `---` markers
 
-> The description helps the agent understand what the data source contains and when to use it.
+### Eventhouse Description
+1. Click on the **KQL Database** data source
+2. Find the **Description** field
+3. Copy and paste the content from `agent-config/eventhouse-datasource-description.md`
+   - Copy only the text between the `---` markers
+
+### Ontology Description
+1. Click on the **Ontology** data source
+2. Find the **Description** field
+3. Copy and paste the content from `agent-config/ontology-datasource-description.md`
+   - Copy only the text between the `---` markers
+
+> The descriptions help the agent understand what each data source contains and when to use it.
 
 ## 2.4 Add Data Source Instructions
 
-1. In the same data source configuration, find the **Instructions** field
-2. Copy and paste the content from `agent-config/datasource-instructions.md`
+### Lakehouse Instructions
+1. Click on the **Lakehouse** data source
+2. Find the **Instructions** field
+3. Copy and paste the content from `agent-config/datasource-instructions.md`
    - Copy only the text between the `---` markers
-3. This includes:
-   - General knowledge about the dataset
-   - Table descriptions with column details
-   - Query logic (joins, filtering, common patterns)
-   - Value format reference
+4. This includes: table descriptions, SQL query logic, joins, filtering patterns
 
-> These instructions guide the agent in generating accurate SQL queries.
+### Eventhouse Instructions
+1. Click on the **KQL Database** data source
+2. Find the **Instructions** field
+3. Copy and paste the content from `agent-config/eventhouse-datasource-instructions.md`
+   - Copy only the text between the `---` markers
+4. This includes: KQL table descriptions, query patterns, value formats
+
+### Ontology Instructions
+1. Click on the **Ontology** data source
+2. Find the **Instructions** field
+3. Copy and paste the content from `agent-config/ontology-datasource-instructions.md`
+   - Copy only the text between the `---` markers
+4. This includes: entity types, relationships, GQL patterns, source routing logic
+
+> These instructions guide the agent in generating accurate SQL, KQL, and graph queries.
 
 ## 2.5 Add Example Queries
 
-1. In the data source configuration, find **Example queries**
+### Lakehouse Example Queries (SQL)
+1. Click on the **Lakehouse** data source → find **Example queries**
 2. For each query in `agent-config/example-queries.sql`:
    - Click **+ Add example**
    - Enter the **Question** (the comment line starting with `-- Question:`)
    - Enter the **SQL Query** (the SQL code below the question)
 3. Add at least the first 8-10 examples for best results
 
-> Example queries act as few-shot learning samples. The agent retrieves the top 3 most relevant examples for each user question.
+### Eventhouse Example Queries (KQL)
+1. Click on the **KQL Database** data source → find **Example queries**
+2. For each query in `agent-config/example-queries-eventhouse.kql`:
+   - Click **+ Add example**
+   - Enter the **Question** (the comment line starting with `// Question:`)
+   - Enter the **KQL Query** (the code below the question)
+3. Add at least 8-10 examples
+
+> Example queries act as few-shot learning samples. The agent retrieves the top 3 most relevant examples for each user question, per data source.
 
 ## 2.6 Add Agent Instructions
 
@@ -71,12 +127,21 @@
 ## 2.7 Test the Agent
 
 1. Click **Chat** or open the agent's chat interface
-2. Try a simple question: "How many flights are in the database?"
-3. The agent should query the flights table and return a count of ~100,000
-4. Try a few more test questions:
+2. Test each data source:
+
+**Lakehouse (SQL):**
+   - "How many flights are in the database?" → expects ~100,000
    - "Which airline has the most flights?"
-   - "What is the average delay in minutes?"
-   - "Show me the busiest month"
+
+**Eventhouse (KQL):**
+   - "What is the average turnaround time by terminal?" → expects 60-90 min
+   - "Which captains flew the most flights?"
+
+**Ontology (Graph):**
+   - "What entity types exist in the ontology?"
+   - "Which crew members were on flights during storms?"
+
+3. If any data source doesn't respond correctly, check the description and instructions for that source
 
 ## 2.8 Fine-tune (Optional)
 

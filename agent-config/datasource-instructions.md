@@ -10,7 +10,7 @@ This Lakehouse contains flight operations data for Prague Václav Havel Airport 
 
 ## Table Descriptions
 
-### flights (~50,000 rows)
+### flights (~105,000 rows)
 The main fact table. Each row is one flight event (arrival or departure).
 - **flight_id** (INT): Primary key
 - **flight_number** (STRING): IATA format, e.g. "OK 456", "LH 1402"

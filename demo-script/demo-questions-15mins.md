@@ -76,3 +76,31 @@
 
 **Expected**: Monthly table showing seasonal patterns in both traffic and passenger volumes
 
+---
+
+## 🚀 Fabric IQ Bonus (if time allows, +5 min)
+
+If you have extra time, add these Fabric IQ questions to show multi-source capabilities:
+
+### Q-A4 — Top Captains by Flights (Eventhouse/KQL)
+
+- 🇬🇧 *"Which captains flew the most flights? Show top 10 with flight count."*
+
+**Expected**: KQL query on crew_rosters table, showing captain names and flight counts.
+
+---
+
+### Q-B3 — Multi-Hop: Weather → Flight → Crew (Ontology/Graph)
+
+- 🇬🇧 *"Which crew members were on flights that operated during storm conditions?"*
+
+**Expected**: Graph traversal: WeatherObservation[storm] → Flight → CrewMember
+
+---
+
+### Q-D2 — Full Chain Traversal (Cross-Source)
+
+- 🇬🇧 *"Trace: which airline had the most cancelled flights, what maintenance events affected those flights, and which crew members were assigned?"*
+
+**Expected**: Combines Lakehouse (flights, airlines) + Eventhouse (maintenance, crew) through ontology.
+

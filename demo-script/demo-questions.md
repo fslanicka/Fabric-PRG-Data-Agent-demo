@@ -334,3 +334,44 @@ For a **5-minute quick demo**, use: Q1 → Q5 → Q11 → Q18 → Q27
 - **Show both languages** — ask the same question in Czech and English to demonstrate bilingual support
 - **If the agent gives a wrong answer**, it's a great opportunity to show how adjusting instructions improves results
 - **Have the example queries ready** in case you need to demonstrate the few-shot learning feature
+
+---
+
+## 🚀 Extended Demo: Fabric IQ (Multi-Source)
+
+The questions above use only the **Lakehouse** data source (SQL). For a more comprehensive demo showcasing **Eventhouse** (KQL) and **Ontology** (Graph) data sources, continue with:
+
+→ **[demo-questions-fabric-iq.md](demo-questions-fabric-iq.md)** — 20 additional questions covering:
+- **Operational data** (KQL): gate utilization, crew assignments, maintenance patterns
+- **Graph traversals** (Ontology): multi-hop queries, cross-domain reasoning
+- **Cross-source reasoning**: combining Lakehouse + Eventhouse through the ontology
+- **Source comparison**: same question answered via SQL, KQL, and Graph
+
+### Combined Demo Questions (Lakehouse + Eventhouse + Ontology)
+
+These questions bridge the original Lakehouse demo with the new Fabric IQ capabilities:
+
+### Q29 — Flight + Gate + Crew
+> **Demonstrates**: Cross-source intelligence (Lakehouse + Eventhouse)
+
+🇬🇧 *"For the top 5 most delayed airlines, what was their average gate turnaround time and how many unique crew members did they use?"*
+
+**Expected**: Combines flight delay data (Lakehouse) with gate and crew data (Eventhouse). Requires ontology for cross-domain reasoning.
+
+---
+
+### Q30 — Weather + Maintenance + Cancellations
+> **Demonstrates**: 3-way cross-source analysis
+
+🇬🇧 *"On the 10 worst weather days (by delay rate), how many maintenance events occurred and what was the cancellation rate?"*
+
+**Expected**: Weather and flights from Lakehouse, maintenance from Eventhouse, connected through ontology relationships.
+
+---
+
+### Q31 — Full Chain Traversal
+> **Demonstrates**: End-to-end Fabric IQ power
+
+🇬🇧 *"Trace the full operational chain for cancelled flights in January 2025: which airlines, what maintenance events, which crews were affected, and what were the weather conditions?"*
+
+**Expected**: Multi-entity traversal through the ontology graph, pulling data from both Lakehouse and Eventhouse.

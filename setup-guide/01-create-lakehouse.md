@@ -42,13 +42,13 @@
    - `airlines` table (~40 rows) — ~5 seconds
    - `airports` table (~100 rows) — ~5 seconds
    - `weather` table (~730 rows) — ~10 seconds
-   - `flights` table (~50,000 rows) — ~1-2 minutes
+   - `flights` table (~105,000 rows) — ~1-2 minutes
 3. The final cell prints a summary with row counts and statistics
 4. Verify the output matches approximately:
    - airlines: 40
    - airports: ~100
    - weather: 731
-   - flights: ~50,000
+   - flights: ~105,000
 
 ## 1.5 Verify in Lakehouse
 

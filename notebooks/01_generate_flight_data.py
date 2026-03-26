@@ -8,7 +8,7 @@ Usage in Fabric:
     CELL 1 should be a Markdown cell; all others are Code cells.
     Attach a Lakehouse before running — tables are written to the default Lakehouse.
 
-Generates ~50,000 realistic flight records for Prague (PRG) airport across
+Generates ~105,000 realistic flight records for Prague (PRG) airport across
 2024-01-01 to 2025-12-31, plus supporting airlines, airports, and weather tables.
 """
 
@@ -18,7 +18,7 @@ Generates ~50,000 realistic flight records for Prague (PRG) airport across
 # Create a **Markdown** cell in Fabric with the following content:
 #
 #   # Prague Airport Flight Data Generator
-#   Generates ~50,000 realistic flight records for PRG airport (2024-2025)
+#   Generates ~105,000 realistic flight records for PRG airport (2024-2025)
 #
 
 # ============================================================================
@@ -45,7 +45,7 @@ spark = SparkSession.builder.getOrCreate()
 # Configuration
 START_DATE = date(2024, 1, 1)
 END_DATE = date(2025, 12, 31)
-TARGET_FLIGHTS = 50000
+TARGET_FLIGHTS = 105000  # approximate; actual count depends on Poisson sampling
 SEED = 42
 random.seed(SEED)
 
@@ -332,6 +332,7 @@ def generate_weather(start_date, end_date):
             vis = round(random.uniform(8, 15), 1)
 
         weather_rows.append((
+            f"WX-{current.isoformat()}",
             current.isoformat(),
             temp,
             wind,
@@ -346,6 +347,7 @@ def generate_weather(start_date, end_date):
 weather_data = generate_weather(START_DATE, END_DATE)
 
 weather_schema = StructType([
+    StructField("weather_id", StringType(), False),
     StructField("date", StringType(), False),
     StructField("temperature_celsius", DoubleType(), False),
     StructField("wind_speed_kmh", DoubleType(), False),
@@ -356,7 +358,7 @@ weather_schema = StructType([
 
 df_weather = spark.createDataFrame(weather_data, weather_schema)
 df_weather = df_weather.withColumn("date", F.col("date").cast("date"))
-df_weather.write.mode("overwrite").format("delta").saveAsTable("weather")
+df_weather.write.mode("overwrite").option("overwriteSchema", "true").format("delta").saveAsTable("weather")
 print(f"Weather table created: {df_weather.count()} rows")
 
 # ============================================================================
@@ -553,7 +555,7 @@ dep_sched  = (
 )
 
 # Weather lookup (from CELL 5 output)
-wx_lookup = {w[0]: w[5] for w in weather_data}  # date_str → condition
+wx_lookup = {w[1]: w[6] for w in weather_data}  # date_str → condition
 fl_date_strs = np.array([str(d.date()) for d in dep_sched])
 fl_wx        = np.array([wx_lookup.get(d, "clear") for d in fl_date_strs])
 fl_wx_boost  = np.array([WX_BOOST_MAP.get(c, 0.0) for c in fl_wx])

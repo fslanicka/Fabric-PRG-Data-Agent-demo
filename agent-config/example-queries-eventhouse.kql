@@ -1,0 +1,75 @@
+// ============================================================
+// Example Queries for Eventhouse KQL Database (Few-Shot)
+// ============================================================
+// Copy these into the "Example Queries" section of your
+// Eventhouse data source configuration in the Data Agent.
+// Each query has a natural language question and the KQL answer.
+// ============================================================
+
+// Question: What is the average turnaround time by terminal?
+gate_assignments
+| summarize avg_turnaround = round(avg(turnaround_minutes), 1) by terminal
+| order by terminal asc
+
+// Question: Which gates are the busiest?
+gate_assignments
+| summarize assignments = count() by gate, terminal
+| order by assignments desc
+| take 10
+
+// Question: How many gate assignments were delayed or reassigned?
+gate_assignments
+| summarize count() by status
+| order by count_ desc
+
+// Question: Which crew members flew the most flights?
+crew_rosters
+| where role == "captain"
+| summarize flights = dcount(flight_id) by crew_name, crew_member_id
+| order by flights desc
+| take 10
+
+// Question: What is the crew nationality distribution?
+crew_rosters
+| summarize crew_count = dcount(crew_member_id) by nationality
+| order by crew_count desc
+
+// Question: How many crew members are based at each airport?
+crew_rosters
+| summarize crew_count = dcount(crew_member_id) by base_airport
+| order by crew_count desc
+| take 10
+
+// Question: Show the monthly distribution of maintenance events
+maintenance_events
+| extend month = startofmonth(start_datetime)
+| summarize events = count(), avg_duration = round(avg(duration_hours), 1) by month
+| order by month asc
+
+// Question: Which aircraft types have the most unscheduled maintenance?
+maintenance_events
+| where event_type == "unscheduled"
+| summarize events = count(), avg_hours = round(avg(duration_hours), 1) by aircraft_type
+| order by events desc
+| take 10
+
+// Question: What is the breakdown of maintenance categories?
+maintenance_events
+| summarize events = count(), avg_hours = round(avg(duration_hours), 1) by category
+| order by events desc
+
+// Question: How many AOG (Aircraft on Ground) events occurred?
+maintenance_events
+| where event_type == "aog"
+| summarize events = count(), total_hours = round(sum(duration_hours), 0) by aircraft_type
+| order by events desc
+
+// Question: How many maintenance events are linked to specific flights?
+maintenance_events
+| summarize total = count(), linked = countif(isnotnull(related_flight_id)), unlinked = countif(isnull(related_flight_id))
+
+// Question: What is the unresolved maintenance event count by category?
+maintenance_events
+| where resolved == false
+| summarize unresolved = count() by category, event_type
+| order by unresolved desc
