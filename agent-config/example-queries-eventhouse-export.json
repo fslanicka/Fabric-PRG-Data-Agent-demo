@@ -1,0 +1,14 @@
+{
+    "What is the average turnaround time by terminal?": "gate_assignments\r\n| summarize avg_turnaround = round(avg(turnaround_minutes), 1) by terminal\r\n| order by terminal asc",
+    "Which gates are the busiest?": "gate_assignments\r\n| summarize assignments = count() by gate, terminal\r\n| order by assignments desc\r\n| take 10",
+    "How many gate assignments were delayed or reassigned?": "gate_assignments\r\n| summarize count() by status\r\n| order by count_ desc",
+    "Which crew members flew the most flights?": "crew_rosters\r\n| where role == \"captain\"\r\n| summarize flights = dcount(flight_id) by crew_name, crew_member_id\r\n| order by flights desc\r\n| take 10",
+    "What is the crew nationality distribution?": "crew_rosters\r\n| summarize crew_count = dcount(crew_member_id) by nationality\r\n| order by crew_count desc",
+    "How many crew members are based at each airport?": "crew_rosters\r\n| summarize crew_count = dcount(crew_member_id) by base_airport\r\n| order by crew_count desc\r\n| take 10",
+    "Show the monthly distribution of maintenance events": "maintenance_events\r\n| extend month = startofmonth(start_datetime)\r\n| summarize events = count(), avg_duration = round(avg(duration_hours), 1) by month\r\n| order by month asc",
+    "Which aircraft types have the most unscheduled maintenance?": "maintenance_events\r\n| where event_type == \"unscheduled\"\r\n| summarize events = count(), avg_hours = round(avg(duration_hours), 1) by aircraft_type\r\n| order by events desc\r\n| take 10",
+    "What is the breakdown of maintenance categories?": "maintenance_events\r\n| summarize events = count(), avg_hours = round(avg(duration_hours), 1) by category\r\n| order by events desc",
+    "How many AOG (Aircraft on Ground) events occurred?": "maintenance_events\r\n| where event_type == \"aog\"\r\n| summarize events = count(), total_hours = round(sum(duration_hours), 0) by aircraft_type\r\n| order by events desc",
+    "How many maintenance events are linked to specific flights?": "maintenance_events\r\n| summarize total = count(), linked = countif(isnotnull(related_flight_id)), unlinked = countif(isnull(related_flight_id))",
+    "What is the unresolved maintenance event count by category?": "maintenance_events\r\n| where resolved == false\r\n| summarize unresolved = count() by category, event_type\r\n| order by unresolved desc"
+}

@@ -2,7 +2,7 @@
 
 ## Overview
 
-A complete demo package for **Microsoft Fabric Data Agent** with **Fabric IQ** (Ontology) featuring realistic flight and operational data from Prague Václav Havel Airport (PRG) covering 2024–2025. Demonstrates a **triple-source Data Agent** with Lakehouse (SQL), Eventhouse (KQL), and Ontology (Graph/GQL) — showcasing multi-source intelligence, graph-based reasoning, and cross-domain analytics.
+A complete demo package for **Microsoft Fabric Data Agent** with **Fabric IQ** (Ontology) and **Fabric Maps** featuring realistic flight and operational data from Prague Václav Havel Airport (PRG) covering 2024–2025. Demonstrates a **triple-source Data Agent** with Lakehouse (SQL), Eventhouse (KQL), and Ontology (Graph/GQL) — showcasing multi-source intelligence, graph-based reasoning, cross-domain analytics, and geospatial visualization.
 
 Includes ~105,000 flights, 40 airlines, 100 airports, daily weather, ~5,000 gate assignments, ~3,000 crew roster entries, and ~2,000 maintenance events.
 
@@ -12,9 +12,9 @@ Includes ~105,000 flights, 40 airlines, 100 airports, daily weather, ~5,000 gate
 |--------|----------|
 | `data-model/` | Table schemas (Lakehouse + Eventhouse), ontology model, relationships |
 | `notebooks/` | Fabric Notebooks — flight data (Lakehouse) + operational data (Eventhouse) |
-| `agent-config/` | Agent instructions, 3× data source configs (Lakehouse, Eventhouse, Ontology), example queries |
-| `setup-guide/` | Step-by-step setup (Lakehouse → Eventhouse → Ontology → Agent → Sharing) |
-| `demo-script/` | 40+ demo questions: Lakehouse (CZ+EN), Fabric IQ (EN) with expected answers |
+| `agent-config/` | Agent instructions, 3× data source configs (Lakehouse, Eventhouse, Ontology), example queries, KQL map functions |
+| `setup-guide/` | Step-by-step setup (Lakehouse → Eventhouse → Ontology → Agent → Map → Sharing) |
+| `demo-script/` | 40+ demo questions: Lakehouse (CZ+EN), Fabric IQ (EN), Fabric Maps scenarios |
 
 ## Quick Start
 
@@ -26,6 +26,7 @@ Includes ~105,000 flights, 40 airlines, 100 airports, daily weather, ~5,000 gate
   - **Fabric IQ** (for Ontology)
   - **Graph** (for ontology graph visualization)
   - **Real-Time Intelligence** (for Eventhouse)
+  - **Map** and **Azure Maps services** (for Fabric Maps)
 - Contributor or higher role in the workspace
 
 ### Steps
@@ -36,7 +37,8 @@ Includes ~105,000 flights, 40 airlines, 100 airports, daily weather, ~5,000 gate
 4. **Generate operational data** — Import and run `notebooks/02_generate_operational_data.py`
 5. **Configure Fabric IQ Ontology** — Follow `setup-guide/02b-configure-ontology.md`
 6. **Configure the Data Agent** — Follow `setup-guide/02-configure-agent.md` (3 data sources)
-7. **Run the demo** — Start with `demo-script/demo-questions.md`, then `demo-script/demo-questions-fabric-iq.md`
+7. **Configure Fabric Maps** — Follow `setup-guide/04-configure-map.md`
+8. **Run the demo** — Start with `demo-script/demo-questions.md`, then `demo-script/demo-questions-fabric-iq.md`
 
 ## Data Model Overview
 
@@ -102,6 +104,12 @@ The demo showcases these Data Agent and Fabric IQ capabilities:
 - **Cross-domain analysis**: Connecting Lakehouse + Eventhouse data through entity relationships
 - **Impact analysis**: "Show all entities connected to London Heathrow within 2 hops"
 
+### Fabric Maps (Geospatial Visualization)
+- **Flight network**: All destination airports connected to Prague on an interactive map
+- **Crew distribution**: Crew member base airports visualized with bubble markers sized by count
+- **Maintenance overview**: Aircraft maintenance events at Prague with category breakdown
+- **Geographic context**: Basemap with satellite/road imagery, clustering, filtering, and popups
+
 ## Technologies Used
 
 - Microsoft Fabric Lakehouse (Delta tables) — flight analytics data
@@ -109,6 +117,7 @@ The demo showcases these Data Agent and Fabric IQ capabilities:
 - Microsoft Fabric IQ — Ontology (preview) — unified semantic layer
 - Microsoft Fabric Graph (preview) — entity relationship graph
 - Microsoft Fabric Data Agent (preview) — conversational AI
+- Microsoft Fabric Maps (preview) — geospatial visualization
 - PySpark + NumPy (data generation)
 - T-SQL, KQL, GQL — three query languages
 

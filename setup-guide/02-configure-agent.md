@@ -59,10 +59,12 @@
    - Copy only the text between the `---` markers
 
 ### Ontology Description
-1. Click on the **Ontology** data source
-2. Find the **Description** field
-3. Copy and paste the content from `agent-config/ontology-datasource-description.md`
-   - Copy only the text between the `---` markers
+
+> ⚠️ **Known limitation (preview):** The Fabric Data Agent UI does not currently display Description or Instructions fields for ontology data sources. Only Lakehouse and KQL Database data sources show these fields. As a workaround, include the ontology description and instructions content in the **Agent Instructions** (section 2.6). The provided `agent-config/agent-instructions.md` already contains ontology guidance — see "Ontology / Fabric IQ" and "Cross-Domain Questions" sections. For additional detail, append content from `agent-config/ontology-datasource-description.md` and `agent-config/ontology-datasource-instructions.md` to your agent instructions.
+
+~~1. Click on the **Ontology** data source~~
+~~2. Find the **Description** field~~
+~~3. Copy and paste the content from `agent-config/ontology-datasource-description.md`~~
 
 > The descriptions help the agent understand what each data source contains and when to use it.
 
@@ -83,11 +85,13 @@
 4. This includes: KQL table descriptions, query patterns, value formats
 
 ### Ontology Instructions
-1. Click on the **Ontology** data source
-2. Find the **Instructions** field
-3. Copy and paste the content from `agent-config/ontology-datasource-instructions.md`
-   - Copy only the text between the `---` markers
-4. This includes: entity types, relationships, GQL patterns, source routing logic
+
+> ⚠️ **Known limitation (preview):** Same as above — the ontology data source does not expose an Instructions field in the UI. Include this content in the **Agent Instructions** instead.
+
+~~1. Click on the **Ontology** data source~~
+~~2. Find the **Instructions** field~~
+~~3. Copy and paste the content from `agent-config/ontology-datasource-instructions.md`~~
+~~4. This includes: entity types, relationships, GQL patterns, source routing logic~~
 
 > These instructions guide the agent in generating accurate SQL, KQL, and graph queries.
 
@@ -117,7 +121,10 @@
 2. Find **Agent Instructions** (at the agent level, not data source level)
 3. Copy and paste the content from `agent-config/agent-instructions.md`
    - Copy only the text between the `---` markers
-4. This includes:
+4. **Important:** Since the ontology data source does not support Description/Instructions fields in the UI (see sections 2.3 and 2.4), also append the content from:
+   - `agent-config/ontology-datasource-description.md` (between the `---` markers)
+   - `agent-config/ontology-datasource-instructions.md` (between the `---` markers)
+5. This includes:
    - Objective
    - Data source descriptions
    - Key terminology
@@ -139,7 +146,7 @@
 
 **Ontology (Graph):**
    - "What entity types exist in the ontology?"
-   - "Which crew members were on flights during storms?"
+   - "Which crew members were on flights to London during fog?"
 
 3. If any data source doesn't respond correctly, check the description and instructions for that source
 

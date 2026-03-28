@@ -1,0 +1,182 @@
+// Fabric Maps — KQL Stored Functions for Prague Airport Map Layers
+// ================================================================
+//
+// These functions provide map-ready data for Fabric Maps layers.
+// Each function returns rows with latitude/longitude columns that
+// Fabric Maps can render as markers or route lines.
+//
+// Prerequisites:
+//   - Eventhouse KQL database 'PRGOperations' with tables:
+//     airports, gate_assignments, crew_rosters, maintenance_events
+//   - The airports table must be ingested first (Notebook 02, CELL 10)
+//
+// Usage:
+//   Run each .create-or-alter function block in the KQL database
+//   query editor, then use the function name as a Fabric Maps layer source.
+//
+// ====================================================================
+
+
+// --------------------------------------------------------------------
+// Function 1: fn_destination_map
+// --------------------------------------------------------------------
+// Returns one row per airport connected to Prague (PRG).
+// Each row includes coordinates and metadata — ideal for a bubble/marker layer.
+//
+// Map layer type: Marker (bubble)
+//   - Latitude column: latitude
+//   - Longitude column: longitude
+//   - Color by: region
+// --------------------------------------------------------------------
+
+.create-or-alter function with (folder="FabricMaps", docstring="All airports connected to Prague — marker layer for Fabric Maps") fn_destination_map() {
+    airports
+    | where airport_code != "PRG"
+    | project
+        airport_code,
+        airport_name,
+        city,
+        country,
+        region,
+        latitude,
+        longitude
+}
+
+
+// --------------------------------------------------------------------
+// Function 2: fn_crew_base_distribution
+// --------------------------------------------------------------------
+// Returns one row per crew base airport with crew count and role
+// breakdown. Joins crew_rosters.base_airport with airports table.
+//
+// Map layer type: Marker (bubble)
+//   - Latitude column: latitude
+//   - Longitude column: longitude
+//   - Size by: crew_count
+//   - Color by: region or captain_count
+// --------------------------------------------------------------------
+
+.create-or-alter function with (folder="FabricMaps", docstring="Crew member distribution by base airport for map visualization") fn_crew_base_distribution() {
+    crew_rosters
+    | summarize
+        crew_count = dcount(crew_member_id),
+        captain_count = dcountif(crew_member_id, role == "captain"),
+        first_officer_count = dcountif(crew_member_id, role == "first_officer"),
+        purser_count = dcountif(crew_member_id, role == "purser"),
+        cabin_crew_count = dcountif(crew_member_id, role == "cabin_crew"),
+        flights_covered = dcount(flight_id)
+        by base_airport
+    | join kind=inner (airports) on $left.base_airport == $right.airport_code
+    | project
+        base_airport,
+        airport_name,
+        city,
+        country,
+        region,
+        latitude,
+        longitude,
+        crew_count,
+        captain_count,
+        first_officer_count,
+        purser_count,
+        cabin_crew_count,
+        flights_covered
+    | order by crew_count desc
+}
+
+
+// --------------------------------------------------------------------
+// Function 3: fn_maintenance_by_airport
+// --------------------------------------------------------------------
+// Shows maintenance events aggregated by the aircraft's related
+// airport (via related_flight_id → crew_rosters.base_airport or
+// gate_assignments). Since maintenance_events don't directly carry
+// airport codes, this uses a simpler approach: group by aircraft_type
+// and show events at PRG (all maintenance happens at Prague).
+//
+// Alternative: if you want to show maintenance hotspots, this places
+// all events at Prague Airport with breakdown by category.
+//
+// Map layer type: Marker (single point at PRG with popup details)
+//   - Latitude column: latitude
+//   - Longitude column: longitude
+// --------------------------------------------------------------------
+
+.create-or-alter function with (folder="FabricMaps", docstring="Maintenance events summary at Prague Airport for map visualization") fn_maintenance_at_prg() {
+    let prg_lat = real(50.1008);
+    let prg_lon = real(14.2600);
+    maintenance_events
+    | summarize
+        total_events = count(),
+        scheduled_count = countif(event_type == "scheduled"),
+        unscheduled_count = countif(event_type == "unscheduled"),
+        aog_count = countif(event_type == "aog"),
+        avg_duration_hours = round(avg(duration_hours), 1),
+        unresolved_count = countif(resolved == false),
+        categories = make_set(category)
+        by aircraft_type
+    | extend
+        latitude = prg_lat,
+        longitude = prg_lon,
+        airport = "PRG",
+        airport_name = "Prague Václav Havel Airport"
+}
+
+
+// ====================================================================
+// OPTIONAL: Flight Routes Summary Table
+// ====================================================================
+// If you want richer flight statistics on the map (flight counts,
+// delay rates per destination), you can create a summary table in the
+// Eventhouse from the Lakehouse data. Add this to Notebook 02 or run
+// as a one-time KQL ingestion from the Lakehouse flights table.
+//
+// The following function assumes a 'flight_route_summary' table exists
+// with pre-aggregated route stats. See the setup guide for how to
+// create it.
+// ====================================================================
+
+// To create the summary table, run this in a Fabric Notebook (PySpark):
+//
+//   df_routes = spark.sql("""
+//       SELECT
+//           CASE WHEN f.flight_type = 'departure'
+//                THEN f.destination_airport_code
+//                ELSE f.origin_airport_code END AS remote_airport_code,
+//           f.flight_type,
+//           COUNT(*) AS total_flights,
+//           AVG(CASE WHEN f.status = 'delayed' THEN f.delay_minutes END) AS avg_delay_minutes,
+//           SUM(CASE WHEN f.status = 'delayed' THEN 1 ELSE 0 END) AS delayed_count,
+//           SUM(CASE WHEN f.status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled_count,
+//           AVG(f.passenger_count) AS avg_passengers
+//       FROM flights f
+//       GROUP BY 1, 2
+//   """)
+//   # Then write to Eventhouse using write_to_eventhouse() pattern
+//
+// Once the table exists, use this function:
+
+// .create-or-alter function with (folder="FabricMaps", docstring="Flight routes from/to Prague with aggregated stats — requires flight_route_summary table") fn_flight_routes_detailed() {
+//     flight_route_summary
+//     | join kind=inner (airports) on $left.remote_airport_code == $right.airport_code
+//     | extend
+//         prg_latitude = real(50.1008),
+//         prg_longitude = real(14.2600)
+//     | project
+//         remote_airport_code,
+//         airport_name,
+//         city,
+//         country,
+//         region,
+//         flight_type,
+//         total_flights,
+//         avg_delay_minutes = round(avg_delay_minutes, 1),
+//         delayed_count,
+//         cancelled_count,
+//         avg_passengers = round(avg_passengers, 0),
+//         latitude,          // destination airport
+//         longitude,         // destination airport
+//         prg_latitude,      // Prague origin
+//         prg_longitude      // Prague origin
+//     | order by total_flights desc
+// }

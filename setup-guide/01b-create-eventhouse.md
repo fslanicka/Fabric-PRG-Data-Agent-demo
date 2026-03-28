@@ -115,7 +115,19 @@ You should see the identity listed with an **Admins** role.
     related_flight_id: int,
     resolved: bool
 )
+
+.create table airports (
+    airport_code: string,
+    airport_name: string,
+    city: string,
+    country: string,
+    region: string,
+    latitude: real,
+    longitude: real
+)
 ```
+
+> **Note**: The `airports` table is a reference copy from the Lakehouse, used by Fabric Maps KQL functions to join operational data with geographic coordinates. It is written by Notebook 02, CELL 10.
 
 ## 1b.5 Import the Operational Data Notebook
 

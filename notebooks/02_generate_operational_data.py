@@ -582,3 +582,39 @@ print(f"  Avg duration: {pdf_maintenance['duration_hours'].mean():.1f} hours")
 
 print("\nAll tables are ready in your Eventhouse!")
 print("Proceed to setup-guide/02b-configure-ontology.md to create the ontology.")
+
+# ============================================================================
+# CELL 10 — Write Airports Reference Table to Eventhouse (for Fabric Maps)
+# ============================================================================
+# Fabric Maps requires geographic data (latitude/longitude) in the KQL database.
+# This cell copies the airports reference table from the Lakehouse to the Eventhouse,
+# enabling KQL stored functions that join operational data with airport coordinates.
+
+print("\nWriting airports reference table to Eventhouse for Fabric Maps...")
+
+df_airports = spark.sql("SELECT * FROM airports")
+
+airports_kql_schema = StructType([
+    StructField("airport_code", StringType(), False),
+    StructField("airport_name", StringType(), False),
+    StructField("city", StringType(), False),
+    StructField("country", StringType(), False),
+    StructField("region", StringType(), False),
+    StructField("latitude", DoubleType(), False),
+    StructField("longitude", DoubleType(), False),
+])
+
+df_airports.write \
+    .format("com.microsoft.kusto.spark.synapse.datasource") \
+    .option("kustoCluster", KUSTO_URI) \
+    .option("kustoDatabase", KUSTO_DATABASE) \
+    .option("kustoTable", "airports") \
+    .option("accessToken", accessToken) \
+    .option("tableCreateOptions", "CreateIfNotExist") \
+    .mode("Append") \
+    .save()
+
+airports_count = df_airports.count()
+print(f"  ✅ airports: {airports_count:,} rows written to Eventhouse")
+print("\nAirports reference data is now available for Fabric Maps KQL functions.")
+print("See setup-guide/04-configure-map.md for creating the map.")

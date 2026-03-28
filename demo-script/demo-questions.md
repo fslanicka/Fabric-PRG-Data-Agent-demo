@@ -375,3 +375,52 @@ These questions bridge the original Lakehouse demo with the new Fabric IQ capabi
 🇬🇧 *"Trace the full operational chain for cancelled flights in January 2025: which airlines, what maintenance events, which crews were affected, and what were the weather conditions?"*
 
 **Expected**: Multi-entity traversal through the ontology graph, pulling data from both Lakehouse and Eventhouse.
+
+---
+
+## Category 10: Fabric Maps (Geospatial Visualization)
+
+> **Note**: These are not questions to ask the Data Agent — they are **visual demo scenarios** to showcase on the Fabric Map. Open the `PRG Airport Operations Map` item in your workspace.
+
+### M1 — Flight Network Overview
+> **Demonstrates**: Destination airport markers across 5 continents
+
+**Action**: Open the map with the "Destination Airports" layer enabled. Zoom out to see all connected airports.
+
+**What to show**: ~100 airports across Europe, Middle East, Asia, North America, and Africa — all connected to Prague. Point out the density in Europe vs. long-haul destinations.
+
+---
+
+### M2 — Crew Base Distribution
+> **Demonstrates**: Operational crew data visualized geographically
+
+**Action**: Toggle the "Crew Bases" layer. Zoom into Europe.
+
+**What to show**: Bubble markers at crew base airports, sized by crew count. Highlight that Prague (PRG) has the most crew, followed by other European hubs. Click on a marker to see crew role breakdown (captains, first officers, pursers, cabin crew).
+
+---
+
+### M3 — Maintenance Hotspot
+> **Demonstrates**: Maintenance data overlaid on map
+
+**Action**: Toggle the "Maintenance Events" layer. Zoom to Prague.
+
+**What to show**: All maintenance events clustered at PRG with breakdown by aircraft type. Click markers to see scheduled vs. unscheduled vs. AOG counts, average duration, and categories (engine, avionics, hydraulic, etc.).
+
+---
+
+### M4 — Regional Analysis
+> **Demonstrates**: Interactive filtering on map
+
+**Action**: Use the map filter controls to filter the "Destination Airports" layer by `region`.
+
+**What to show**: Filter to "Middle East" — shows 5 airports (Dubai, Doha, Abu Dhabi, Tel Aviv, Amman). Switch to "Asia" — shows Seoul, Shanghai, Bangkok, Delhi, Tokyo. Demonstrate how filtering helps focus the story on specific regions.
+
+---
+
+### M5 — Combined Layer Demo
+> **Demonstrates**: Multi-layer visual storytelling
+
+**Action**: Enable all three layers simultaneously: Destination Airports (blue), Crew Bases (orange), Maintenance (red at PRG).
+
+**What to show**: The complete operational picture — where Prague connects to, where crew are based, and where maintenance happens. This is the "geospatial intelligence" story that complements the Data Agent's natural language capabilities.
